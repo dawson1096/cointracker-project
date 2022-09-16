@@ -26,7 +26,6 @@ func (orc *Orchestrator) Init() {
 			}
 
 			if orc.LatestBlock == nil || orc.LatestBlock.Height+1 == block.Height {
-				fmt.Println(block.Height)
 				latestBlock, err := getBlock(block.Hash)
 				if err != nil {
 					fmt.Println(err)
@@ -41,47 +40,34 @@ func (orc *Orchestrator) Init() {
 }
 
 func (orc *Orchestrator) AddAddress(c *gin.Context) {
-	type ReqAddress struct {
-		Address string `json:"address"`
-	}
-
-	var request ReqAddress
-
-	if err := c.BindJSON(&request); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"success": false, "error": "invalid json"})
-		return
-	} else if request.Address == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"success": false, "error": "invalid json"})
-		return
-	}
+	addr := c.Param("address")
 
 	//Verify address is valid btc addr
-	if !validateAddress(request.Address) {
+	if !validateAddress(addr) {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "error": "invalid address format"})
 		return
 	}
 
 	orc.mu.Lock()
 	defer orc.mu.Unlock()
-	addAddress := request.Address
-	if _, ok := orc.AddressMap[addAddress]; ok {
+	if _, ok := orc.AddressMap[addr]; ok {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "error": "address already exists"})
 		return
 	}
-	syncRes, err := getAddressStats(addAddress)
+	syncRes, err := getAddressStats(addr)
 	if err != nil {
-		delete(orc.AddressMap, addAddress)
+		delete(orc.AddressMap, addr)
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "error": "internal error"})
 		return
 	}
 
 	ledger := &Ledger{
-		Address: addAddress,
+		Address: addr,
 		Balance: syncRes.Final_balance,
 		Txns:    syncRes.Txs,
 	}
-	orc.AddressMap[addAddress] = ledger
-	c.JSON(http.StatusCreated, gin.H{"success": true, "result": request})
+	orc.AddressMap[addr] = ledger
+	c.JSON(http.StatusCreated, gin.H{"success": true, "result": addr})
 }
 
 func (orc *Orchestrator) RemoveAddress(c *gin.Context) {

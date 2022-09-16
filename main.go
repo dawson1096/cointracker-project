@@ -9,7 +9,7 @@ func main() {
 	orc := &src.Orchestrator{}
 	orc.Init()
 	router := gin.Default()
-	router.POST("/api/addAddress", orc.AddAddress)
+	router.POST("/api/:address/add", orc.AddAddress)
 	router.DELETE("/api/:address/remove", orc.RemoveAddress)
 	router.POST("/api/:address/sync", orc.SyncAddress)
 	router.GET("/api/:address", orc.GetAddress)
