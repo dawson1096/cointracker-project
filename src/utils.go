@@ -1,4 +1,4 @@
-package internal
+package src
 
 func validateAddress(address string) bool {
 	if len(address) == 34 && (string(address[0]) == "1" || string(address[0]) == "3") {

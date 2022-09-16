@@ -1,13 +1,12 @@
 package main
 
 import (
-	"cointracker/internal"
-
+	"github.com/dawson1096/cointracker-project/src"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	orc := &internal.Orchestrator{}
+	orc := &src.Orchestrator{}
 	orc.Init()
 	router := gin.Default()
 	router.POST("/api/addAddress", orc.AddAddress)

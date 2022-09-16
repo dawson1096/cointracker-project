@@ -1,4 +1,4 @@
-package internal
+package src
 
 type Ledger struct {
 	Address string       `json:"address"`
