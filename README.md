@@ -6,7 +6,6 @@
 git clone https://github.com/dawson1096/cointracker-project.git
 cd cointracker-project/
 go run .
-
 ```
 
 ## Endpoints
