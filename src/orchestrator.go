@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"sync"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -34,6 +35,7 @@ func (orc *Orchestrator) Init() {
 
 				orc.LatestBlock = latestBlock
 				orc.updateAddresses()
+				time.Sleep(5 * time.Second)
 			}
 		}
 	}()
@@ -80,13 +82,13 @@ func (orc *Orchestrator) RemoveAddress(c *gin.Context) {
 
 	orc.mu.Lock()
 	defer orc.mu.Unlock()
-	if _, ok := orc.AddressMap[addr]; ok {
-		delete(orc.AddressMap, addr)
-		c.JSON(http.StatusOK, gin.H{"success": true, "address": addr})
+	if _, ok := orc.AddressMap[addr]; !ok {
+		c.JSON(http.StatusNotFound, gin.H{"success": false, "error": "address not found"})
 		return
 	}
 
-	c.JSON(http.StatusNotFound, gin.H{"success": false, "error": "address not found"})
+	delete(orc.AddressMap, addr)
+	c.JSON(http.StatusOK, gin.H{"success": true, "address": addr})
 }
 
 func (orc *Orchestrator) SyncAddress(c *gin.Context) {
