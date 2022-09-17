@@ -67,7 +67,7 @@ func (orc *Orchestrator) AddAddress(c *gin.Context) {
 		Txns:    syncRes.Txs,
 	}
 	orc.AddressMap[addr] = ledger
-	c.JSON(http.StatusCreated, gin.H{"success": true, "result": addr})
+	c.JSON(http.StatusCreated, gin.H{"success": true, "address": addr})
 }
 
 func (orc *Orchestrator) RemoveAddress(c *gin.Context) {
@@ -117,7 +117,7 @@ func (orc *Orchestrator) SyncAddress(c *gin.Context) {
 	}
 	orc.AddressMap[addr] = ledger
 
-	c.JSON(http.StatusCreated, gin.H{"success": true, "result": ledger})
+	c.JSON(http.StatusCreated, gin.H{"success": true})
 }
 
 func (orc *Orchestrator) GetAddress(c *gin.Context) {

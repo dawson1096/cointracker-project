@@ -12,8 +12,8 @@ func main() {
 	router.POST("/api/:address/add", orc.AddAddress)
 	router.DELETE("/api/:address/remove", orc.RemoveAddress)
 	router.POST("/api/:address/sync", orc.SyncAddress)
-	router.GET("/api/:address", orc.GetAddress)
 	router.GET("/api/listAddresses", orc.ListAddresses)
+	router.GET("/api/:address", orc.GetAddress)
 
 	router.Run("localhost:8080")
 }
